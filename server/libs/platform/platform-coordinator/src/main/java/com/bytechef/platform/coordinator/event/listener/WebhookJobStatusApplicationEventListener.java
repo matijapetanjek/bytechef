@@ -16,23 +16,25 @@
  * Modifications copyright (C) 2023 ByteChef Inc.
  */
 
-package com.bytechef.atlas.coordinator.event.listener;
+package com.bytechef.platform.coordinator.event.listener;
 
 import com.bytechef.atlas.configuration.constant.WorkflowConstants;
 import com.bytechef.atlas.coordinator.event.ApplicationEvent;
 import com.bytechef.atlas.coordinator.event.JobStatusApplicationEvent;
+import com.bytechef.atlas.coordinator.event.listener.ApplicationEventListener;
 import com.bytechef.atlas.execution.domain.Job;
 import com.bytechef.atlas.execution.service.JobService;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.web.client.RestTemplate;
+
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.util.Map;
 
 /**
  * @author Arik Cohen
