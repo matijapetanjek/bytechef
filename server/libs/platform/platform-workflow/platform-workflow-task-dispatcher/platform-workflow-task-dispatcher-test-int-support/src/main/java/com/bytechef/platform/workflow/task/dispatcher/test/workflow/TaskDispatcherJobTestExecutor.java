@@ -86,7 +86,7 @@ public class TaskDispatcherJobTestExecutor {
             taskDispatcherResolverFactoriesFunction.apply(
                 event -> syncMessageBroker.send(((MessageEvent<?>) event).getRoute(), event),
                 contextService, counterService, taskExecutionService),
-            taskExecutionService, taskHandlerMapSupplier.get()::get, taskFileStorage, workflowService);
+            taskExecutionService, taskHandlerMapSupplier.get()::get, taskFileStorage, workflowService, null, null);
 
         return jobSyncExecutor.execute(new JobParametersDTO(workflowId, inputs));
     }

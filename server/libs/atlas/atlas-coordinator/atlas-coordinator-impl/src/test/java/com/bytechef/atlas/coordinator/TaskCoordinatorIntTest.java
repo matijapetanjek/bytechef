@@ -127,7 +127,7 @@ public class TaskCoordinatorIntTest {
         JobSyncExecutor jobSyncExecutor = new JobSyncExecutor(
             Objects.requireNonNull(contextService), Objects.requireNonNull(jobService), List.of(),
             Objects.requireNonNull(taskExecutionService), taskHandlerMap::get, TASK_FILE_STORAGE,
-            Objects.requireNonNull(workflowService));
+            Objects.requireNonNull(workflowService), null, null);
 
         return jobSyncExecutor.execute(new JobParametersDTO(workflowId, Collections.singletonMap("yourName", "me")));
     }

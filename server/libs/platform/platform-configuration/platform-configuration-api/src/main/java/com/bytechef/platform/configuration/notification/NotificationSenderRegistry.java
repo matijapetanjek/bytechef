@@ -14,19 +14,29 @@
  * limitations under the License.
  */
 
-package com.bytechef.platform.configuration.service;
+package com.bytechef.platform.configuration.notification;
 
-import com.bytechef.platform.configuration.domain.notification.Event;
+import com.bytechef.commons.util.MapUtils;
 import com.bytechef.platform.configuration.domain.notification.Notification;
 import java.util.List;
 import java.util.Map;
+import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Matija Petanjek
  */
-public interface NotificationService {
+@Component
+public class NotificationSenderRegistry {
+    private final Map<Notification.Type, NotificationSender> notificationSenderMap;
 
-    List<Notification> fetchNotifications(Event.Type eventType);
+    public NotificationSenderRegistry(List<NotificationSender> notificationSenders) {
+        this.notificationSenderMap = MapUtils.toMap(
+            notificationSenders, NotificationSender::getType, notificationSender -> notificationSender);
+    }
 
-    Notification create(String name, Notification.Type type, Map<String, Object> settings, List<Event.Type> eventType);
+    @NonNull
+    public NotificationSender getNotificationSender(Notification.Type type) {
+        return notificationSenderMap.get(type);
+    }
 }

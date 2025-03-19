@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package com.bytechef.platform.configuration.repository;
+package com.bytechef.platform.configuration.notification;
 
-import com.bytechef.platform.configuration.domain.notification.Event;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
+import com.bytechef.platform.configuration.domain.notification.Notification;
 
 /**
  * @author Matija Petanjek
  */
-@Repository
-public interface EventRepository extends CrudRepository<Event, Long> {
+public interface NotificationSender<T extends NotificationHandler> {
 
-    Event findByType(String type);
+    Notification.Type getType();
+
+    void send(Notification notification, T notificationHandler, NotificationContext notificationContext);
 }

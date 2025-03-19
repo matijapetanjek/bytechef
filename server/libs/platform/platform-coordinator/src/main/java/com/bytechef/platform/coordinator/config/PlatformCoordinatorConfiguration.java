@@ -18,6 +18,10 @@ package com.bytechef.platform.coordinator.config;
 
 import com.bytechef.atlas.coordinator.annotation.ConditionalOnCoordinator;
 import com.bytechef.atlas.execution.service.JobService;
+import com.bytechef.platform.configuration.notification.NotificationHandlerRegistry;
+import com.bytechef.platform.configuration.notification.NotificationSenderRegistry;
+import com.bytechef.platform.configuration.service.NotificationService;
+import com.bytechef.platform.coordinator.event.listener.JobStatusApplicationEventListener;
 import com.bytechef.platform.coordinator.event.listener.WebhookJobStatusApplicationEventListener;
 import com.bytechef.platform.coordinator.event.listener.WebhookTaskStartedApplicationEventListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +38,15 @@ public class PlatformCoordinatorConfiguration {
     @Autowired
     private JobService jobService;
 
+    @Autowired
+    private NotificationHandlerRegistry notificationHandlerRegistry;
+
+    @Autowired
+    private NotificationSenderRegistry notificationSenderRegistry;
+
+    @Autowired
+    private NotificationService notificationService;
+
     @Bean
     WebhookJobStatusApplicationEventListener webhookJobStatusApplicationEventListener() {
         return new WebhookJobStatusApplicationEventListener(jobService);
@@ -42,6 +55,12 @@ public class PlatformCoordinatorConfiguration {
     @Bean
     WebhookTaskStartedApplicationEventListener taskStartedWebhookEventListener() {
         return new WebhookTaskStartedApplicationEventListener(jobService);
+    }
+
+    @Bean
+    JobStatusApplicationEventListener jobStatusApplicationEventListener() {
+        return new JobStatusApplicationEventListener(
+            jobService, notificationHandlerRegistry, notificationSenderRegistry, notificationService);
     }
 
 }

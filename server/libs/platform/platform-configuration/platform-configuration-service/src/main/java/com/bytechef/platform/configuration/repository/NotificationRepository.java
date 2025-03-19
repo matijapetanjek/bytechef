@@ -31,9 +31,9 @@ public interface NotificationRepository extends CrudRepository<Notification, Lon
 
     @Query("""
             SELECT * FROM notification
-            JOIN notification_event ON notification.id = notification_event.notification_id
-            JOIN event ON notification_event.event_id = event.id
-            WHERE event.name = :eventName
+            JOIN notification_notification_event ON notification.id = notification_notification_event.notification_id
+            JOIN notification_event ON notification_notification_event.event_id = notification_event.id
+            WHERE notification_event.type = :eventType
         """)
-    List<Notification> findAllByEventName(@Param("eventName") String eventName);
+    List<Notification> findAllByEventType(@Param("eventType") String eventType);
 }

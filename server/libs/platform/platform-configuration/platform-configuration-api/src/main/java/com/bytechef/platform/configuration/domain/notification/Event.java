@@ -31,7 +31,7 @@ public class Event {
     private Long id;
 
     @Column
-    private Name name;
+    private Type type;
 
     public Long getId() {
         return id;
@@ -41,16 +41,40 @@ public class Event {
         this.id = id;
     }
 
-    public Name getName() {
-        return name;
+    public Type getType() {
+        return type;
     }
 
-    public void setName(Name name) {
-        this.name = name;
+    public void setName(Type type) {
+        this.type = type;
     }
 
-    public enum Name {
-        JOB_CREATED, JOB_STARTED, JOB_COMPLETED, JOB_FAILED, JOB_CANCELLED
+    public enum Source {
+        JOB, TASK
+    }
+
+    public enum Type {
+        JOB_CANCELLED(Source.JOB, "CANCELLED"), JOB_CREATED(Source.JOB, "CREATED"),
+        JOB_COMPLETED(Source.JOB, "COMPLETED"), JOB_FAILED(Source.JOB, "FAILED"),
+        JOB_STARTED(Source.JOB, "STARTED");
+
+        public static Type of(Source source, String value) {
+            for (Type type : values()) {
+                if (source == type.source && value.equals(type.value)) {
+                    return type;
+                }
+            }
+
+            throw new IllegalArgumentException();
+        }
+
+        Type(Source source, String value) {
+            this.source = source;
+            this.value = value;
+        }
+
+        private Source source;
+        private String value;
     }
 
     @Override

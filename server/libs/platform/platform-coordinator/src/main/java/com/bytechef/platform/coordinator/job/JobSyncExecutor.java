@@ -56,6 +56,10 @@ import com.bytechef.commons.util.CollectionUtils;
 import com.bytechef.error.ExecutionError;
 import com.bytechef.message.broker.sync.SyncMessageBroker;
 import com.bytechef.message.event.MessageEvent;
+import com.bytechef.platform.configuration.notification.NotificationHandlerRegistry;
+import com.bytechef.platform.configuration.notification.NotificationSenderRegistry;
+import com.bytechef.platform.configuration.service.NotificationService;
+import com.bytechef.platform.coordinator.event.listener.JobStatusApplicationEventListener;
 import com.bytechef.platform.coordinator.job.exception.TaskExecutionErrorType;
 import com.bytechef.platform.definition.WorkflowNodeType;
 import com.bytechef.platform.exception.ExecutionException;
@@ -92,15 +96,21 @@ public class JobSyncExecutor {
     private final TaskExecutionService taskExecutionService;
     private final TaskFileStorage taskFileStorage;
     private final WorkflowService workflowService;
+    private final NotificationService notificationService;
+    private final NotificationSenderRegistry notificationSenderRegistry;
+    private final NotificationHandlerRegistry notificationHandlerRegistry;
 
     public JobSyncExecutor(
         ContextService contextService, JobService jobService,
         List<TaskDispatcherPreSendProcessor> taskDispatcherPreSendProcessors, TaskExecutionService taskExecutionService,
-        TaskHandlerRegistry taskHandlerRegistry, TaskFileStorage taskFileStorage, WorkflowService workflowService) {
+        TaskHandlerRegistry taskHandlerRegistry, TaskFileStorage taskFileStorage, WorkflowService workflowService,
+        NotificationHandlerRegistry notificationHandlerRegistry, NotificationSenderRegistry notificationSenderRegistry,
+        NotificationService notificationService) {
 
         this(
             contextService, jobService, new SyncMessageBroker(), List.of(), List.of(), taskDispatcherPreSendProcessors,
-            List.of(), taskExecutionService, taskHandlerRegistry, taskFileStorage, workflowService);
+            List.of(), taskExecutionService, taskHandlerRegistry, taskFileStorage, workflowService,
+            notificationHandlerRegistry, notificationSenderRegistry, notificationService);
     }
 
     @SuppressFBWarnings("EI")
@@ -110,7 +120,9 @@ public class JobSyncExecutor {
         List<TaskDispatcherAdapterFactory> taskDispatcherAdapterFactories,
         List<TaskDispatcherPreSendProcessor> taskDispatcherPreSendProcessors,
         List<TaskDispatcherResolverFactory> taskDispatcherResolverFactories, TaskExecutionService taskExecutionService,
-        TaskHandlerRegistry taskHandlerRegistry, TaskFileStorage taskFileStorage, WorkflowService workflowService) {
+        TaskHandlerRegistry taskHandlerRegistry, TaskFileStorage taskFileStorage, WorkflowService workflowService,
+        NotificationHandlerRegistry notificationHandlerRegistry,
+        NotificationSenderRegistry notificationSenderRegistry, NotificationService notificationService) {
 
         this.contextService = contextService;
         this.eventPublisher = createEventPublisher(syncMessageBroker);
@@ -122,6 +134,9 @@ public class JobSyncExecutor {
         this.taskExecutionService = taskExecutionService;
         this.taskFileStorage = taskFileStorage;
         this.workflowService = workflowService;
+        this.notificationHandlerRegistry = notificationHandlerRegistry;
+        this.notificationSenderRegistry = notificationSenderRegistry;
+        this.notificationService = notificationService;
 
         syncMessageBroker.receive(
             TaskCoordinatorMessageRoute.ERROR_EVENTS, event -> {
@@ -212,7 +227,10 @@ public class JobSyncExecutor {
     private List<ApplicationEventListener> getApplicationEventListeners(
         TaskExecutionService taskExecutionService, JobService jobService) {
 
-        return List.of(new TaskStartedApplicationEventListener(taskExecutionService, task -> {}, jobService));
+        return List.of(
+            new TaskStartedApplicationEventListener(taskExecutionService, task -> {}, jobService),
+            new JobStatusApplicationEventListener(
+                jobService, notificationHandlerRegistry, notificationSenderRegistry, notificationService));
     }
 
     private static Stream<TaskDispatcherResolver> getTaskDispatcherResolverStream(

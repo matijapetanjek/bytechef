@@ -23,28 +23,22 @@ import com.bytechef.test.config.jdbc.AbstractIntTestJdbcConfiguration;
 import com.bytechef.test.config.testcontainers.PostgreSQLContainerConfiguration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.util.Arrays;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Matija Petanjek
  */
 @ComponentScan(basePackages = {
-    "com.bytechef.platform.configuration"
-}, excludeFilters = @ComponentScan.Filter(
-    type = FilterType.REGEX,
-    pattern = {
-        "com\\.bytechef\\.platform\\.configuration\\.facade\\..*",
-        "com\\.bytechef\\.platform\\.configuration\\.event\\..*",
-        "com\\.bytechef\\.platform\\.configuration\\.workflow\\..*"
-    }))
+    "com.bytechef"
+})
 @Import({
     JacksonConfiguration.class, LiquibaseConfiguration.class, PostgreSQLContainerConfiguration.class
 })

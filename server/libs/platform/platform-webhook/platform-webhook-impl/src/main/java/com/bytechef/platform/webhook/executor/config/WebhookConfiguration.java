@@ -34,6 +34,9 @@ import com.bytechef.component.map.constant.MapConstants;
 import com.bytechef.message.broker.sync.SyncMessageBroker;
 import com.bytechef.message.event.MessageEvent;
 import com.bytechef.platform.configuration.accessor.JobPrincipalAccessorRegistry;
+import com.bytechef.platform.configuration.notification.NotificationHandlerRegistry;
+import com.bytechef.platform.configuration.notification.NotificationSenderRegistry;
+import com.bytechef.platform.configuration.service.NotificationService;
 import com.bytechef.platform.coordinator.job.JobSyncExecutor;
 import com.bytechef.platform.webhook.executor.WebhookWorkflowExecutor;
 import com.bytechef.platform.webhook.executor.WebhookWorkflowExecutorImpl;
@@ -69,10 +72,12 @@ public class WebhookConfiguration {
     @Bean
     WebhookWorkflowExecutor webhookExecutor(
         ApplicationEventPublisher eventPublisher, ContextService contextService, CounterService counterService,
-        JobPrincipalAccessorRegistry jobPrincipalAccessorRegistry, PrincipalJobFacade principalJobFacade,
+        JobPrincipalAccessorRegistry jobPrincipalAccessorRegistry, NotificationService notificationService,
+        PrincipalJobFacade principalJobFacade,
         JobService jobService, List<TaskDispatcherPreSendProcessor> taskDispatcherPreSendProcessors,
         TaskExecutionService taskExecutionService, TaskHandlerRegistry taskHandlerRegistry,
         WebhookWorkflowSyncExecutor triggerSyncExecutor, TaskFileStorage taskFileStorage,
+        NotificationHandlerRegistry notificationHandlerRegistry, NotificationSenderRegistry notificationSenderRegistry,
         WorkflowService workflowService) {
 
         SyncMessageBroker syncMessageBroker = new SyncMessageBroker();
@@ -89,7 +94,7 @@ public class WebhookConfiguration {
                     contextService, counterService, jobService, syncMessageBroker, taskExecutionService,
                     taskFileStorage),
                 taskExecutionService, taskHandlerRegistry, taskFileStorage,
-                workflowService),
+                workflowService, notificationHandlerRegistry, notificationSenderRegistry, notificationService),
             triggerSyncExecutor, taskFileStorage);
     }
 

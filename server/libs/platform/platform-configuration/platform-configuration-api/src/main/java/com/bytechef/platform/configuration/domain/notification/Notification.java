@@ -17,12 +17,6 @@
 package com.bytechef.platform.configuration.domain.notification;
 
 import com.bytechef.commons.data.jdbc.wrapper.MapWrapper;
-import java.time.Instant;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -31,6 +25,13 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
+
+import java.time.Instant;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author Matija Petanjek
@@ -62,6 +63,9 @@ public class Notification {
     private Instant lastModifiedDate;
 
     @Column
+    private String name;
+
+    @Column
     private Type type;
 
     @Column
@@ -69,6 +73,14 @@ public class Notification {
 
     @Transient
     private Set<Event> events = new HashSet<>();
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 
     public void addEvent(Event event) {
         this.events.add(event);

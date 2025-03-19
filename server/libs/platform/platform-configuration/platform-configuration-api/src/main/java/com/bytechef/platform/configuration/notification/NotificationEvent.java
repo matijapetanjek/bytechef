@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package com.bytechef.platform.configuration.repository;
+package com.bytechef.platform.configuration.notification;
 
 import com.bytechef.platform.configuration.domain.notification.Event;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author Matija Petanjek
  */
-@Repository
-public interface EventRepository extends CrudRepository<Event, Long> {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface NotificationEvent {
 
-    Event findByType(String type);
+    Event.Type[] value();
 }

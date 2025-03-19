@@ -43,6 +43,9 @@ import com.bytechef.file.storage.base64.service.Base64FileStorageService;
 import com.bytechef.message.broker.sync.SyncMessageBroker;
 import com.bytechef.message.event.MessageEvent;
 import com.bytechef.platform.component.service.ComponentDefinitionService;
+import com.bytechef.platform.configuration.notification.NotificationHandlerRegistry;
+import com.bytechef.platform.configuration.notification.NotificationSenderRegistry;
+import com.bytechef.platform.configuration.service.NotificationService;
 import com.bytechef.platform.coordinator.job.JobSyncExecutor;
 import com.bytechef.platform.workflow.task.dispatcher.service.TaskDispatcherDefinitionService;
 import com.bytechef.platform.workflow.test.coordinator.task.dispatcher.TestTaskDispatcherPreSendProcessor;
@@ -77,7 +80,9 @@ public class TestExecutorConfiguration {
 
     @Bean
     JobTestExecutor jobTestExecutor(
-        ComponentDefinitionService componentDefinitionService, ObjectMapper objectMapper,
+        ComponentDefinitionService componentDefinitionService, NotificationService notificationService,
+        NotificationHandlerRegistry notificationHandlerRegistry, NotificationSenderRegistry notificationSenderRegistry,
+        ObjectMapper objectMapper,
         TaskHandlerRegistry taskHandlerRegistry, TaskDispatcherDefinitionService taskDispatcherDefinitionService,
         WorkflowService workflowService) {
 
@@ -102,7 +107,10 @@ public class TestExecutorConfiguration {
                 getTaskDispatcherResolverFactories(
                     contextService, counterService, jobService, syncMessageBroker,
                     taskExecutionService, taskFileStorage),
-                taskExecutionService, taskHandlerRegistry, taskFileStorage, workflowService),
+                taskExecutionService, taskHandlerRegistry, taskFileStorage, workflowService,
+                notificationHandlerRegistry,
+                notificationSenderRegistry,
+                notificationService),
             taskDispatcherDefinitionService, taskExecutionService, taskFileStorage);
     }
 
