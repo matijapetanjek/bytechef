@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.bytechef.mcp.server;
+package com.bytechef.mcp.server.config;
 
 import com.bytechef.mcp.tool.ProjectTools;
 import org.springframework.ai.support.ToolCallbacks;
